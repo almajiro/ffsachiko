@@ -1,0 +1,24 @@
+{
+    "name": "almajiro/ffsachiko",
+    "description": "Lightweight FFmpeg Wrapper",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kuroki Almajiro",
+            "email": "kuroki@almajiro.net"
+        }
+    ],
+    "require": {
+        "symfony/process": "^4.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5",
+        "psy/psysh": "@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Almajiro\\FFSachiko\\": "src/FFSachiko/"
+        }
+    }
+}
