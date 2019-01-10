@@ -44,7 +44,7 @@ class File {
     {
         $this->ffprobe->clearArgument()->addArgument('show_streams');
 
-        return $this->getJson();
+        return $this->getJson()['streams'];
     }
 
     public function chapters()
