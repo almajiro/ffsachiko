@@ -1,8 +1,10 @@
 <?php
 
-namespace FFSachiko;
+namespace Almajiro\FFSachiko;
 
-use Almajiro\FFSachiko\AbtractExecutable;
+use Almajiro\FFSachiko\AbstractExecutable;
+use Almajiro\FFSachiko\FFmpeg\File;
+use Almajiro\FFSachiko\FFmpeg\Parameters\Input;
 
 class FFMpeg extends AbstractExecutable
 {
@@ -11,5 +13,10 @@ class FFMpeg extends AbstractExecutable
     ) {
         $this->setCommand($ffmpegBinary);
         $this->setPrefix('--');
+    }
+
+    public function open(Input $file)
+    {
+        return new File($file, $this);
     }
 }

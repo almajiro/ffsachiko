@@ -7,26 +7,33 @@ use Almajiro\FFSachiko\Exceptions\ProcessFailedException;
 
 abstract class AbstractExecutable
 {
-    protected $command;
+    private $command;
 
-    protected $arguments = [];
+    private $arguments = [];
 
-    protected $prefix = '--';
+    private $prefix = '--';
 
-    protected $process;
+    private $process;
+
+    private $timeout = 3600;
+
+    private $preparedArguments = [];
 
     protected function setCommand(string $command)
     {
         $this->command = $command;
-
         return $this;
     }
 
     protected function setPrefix(string $prefix)
     {
         $this->prefix = $prefix;
-
         return $this;
+    }
+
+    public function setTimeout(int $timeout = 3600)
+    {
+        $this->timeout = $timeout;
     }
 
     public function addArgument(string $argument, bool $withPrefix = true)
@@ -53,25 +60,30 @@ abstract class AbstractExecutable
     public function clearArgument()
     {
         $this->arguments = [];
-
         return $this;
     }
 
     public function prepare()
     {
-        $executeCommand[0] = $this->command;
+        $this->preparedArguments = [];
+
+        $this->preparedArguments[0] = $this->command;
         foreach ($this->arguments as $key => $argument) {
-            $executeCommand[$key + 1] = $argument;
+            $this->preparedArguments[$key + 1] = $argument;
         }
 
-        $this->process = new Process($executeCommand);
-
+        $this->process = new Process($this->preparedArguments);
         return $this;
+    }
+
+    public function dump(): array
+    {
+        return $this->preparedArguments;
     }
 
     public function run()
     {
-        $this->process()->run();
+        $this->process()->setTimeout($this->timeout)->run();
         $this->isSuccessful();
     }
 
@@ -83,7 +95,6 @@ abstract class AbstractExecutable
     public function getOutput()
     {
         $this->isSuccessful();
-
         return $this->process()->getOutput();
     }
 
