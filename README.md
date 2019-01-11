@@ -138,5 +138,8 @@ Array
 4. Push to the branch (git push origin my-new-feature)
 5. Create new Pull Request
 
+## お願い
+これは僕の初めてのライブラリです。不細工なところもあるかもれませんが些細なことでも構わないのでご教授お願いします。
+
 ## Author
 [almajiro](https://github.com/almajiro)
