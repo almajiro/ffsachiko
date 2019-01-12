@@ -5,9 +5,13 @@ namespace Almajiro\FFSachiko\FFmpeg;
 use Almajiro\FFSachiko\FFMpeg;
 use Almajiro\FFSachiko\FFmpeg\AbstractParameter;
 use Almajiro\FFSachiko\FFmpeg\Parameters\Input;
+use Almajiro\FFSachiko\FFmpeg\ProgressableTrait;
+use Symfony\Component\Process\Process;
 
 class File
 {
+    use ProgressableTrait;
+
     private $file;
 
     private $ffmpeg;
@@ -37,21 +41,16 @@ class File
 
     public function convert()
     {
+        $this->prepare();
+        $this->ffmpeg->run();
+    }
+
+    protected function prepare()
+    {
         if (is_null($this->save)) {
             //
         }
 
-        $this->prepare();
-        $this->ffmpeg->addArgument($this->save, false);
-
-        $this->ffmpeg->prepare();
-        print_r($this->ffmpeg->dump());
-
-        $this->ffmpeg->run();
-    }
-
-    private function prepare()
-    {
         $this->clearArgument();
 
         foreach ($this->parameters as $parameter) {
@@ -59,6 +58,8 @@ class File
                 $this->ffmpeg->addArgument($option, false);
             }
         }
+
+        $this->ffmpeg->addArgument($this->save, false);
 
         $this->ffmpeg->prepare();
     }
@@ -70,5 +71,10 @@ class File
         foreach ($this->file->getParameters() as $option) {
             $this->ffmpeg->addArgument($option, false);
         }
+    }
+
+    protected function process(): Process
+    {
+        return $this->ffmpeg->process();
     }
 }

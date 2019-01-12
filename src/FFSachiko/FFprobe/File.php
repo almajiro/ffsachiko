@@ -3,6 +3,8 @@
 namespace Almajiro\FFSachiko\FFprobe;
 
 use Almajiro\FFSachiko\FFprobe;
+use Almajiro\FFSachiko\FFprobe\AbstractParameter;
+use Almajiro\FFSachiko\FFprobe\Parameters\PrintFormat;
 use Almajiro\FFSachiko\Exceptions\InvalidArgumentException;
 
 class File {
@@ -10,6 +12,8 @@ class File {
     private $ffprobe;
 
     private $file;
+
+    private $parameters = [];
 
     public function __construct(string $file, FFprobe $ffprobe)
     {
@@ -26,46 +30,34 @@ class File {
         return $this->file;
     }
 
-    public function formats()
+    public function get()
     {
-        $this->ffprobe->clearArgument()->addArgument('show_format');
-        
-        return $this->getJson();
+        $this->ffprobe->clearArgument();
+        $this->add(new PrintFormat('json'));
+       
+        $this->ffprobe->addArgument($this->file, false);
+        foreach ($this->parameters as $parameter) {
+            foreach ($parameter->getParameters() as $option) {
+                $this->ffprobe->addArgument($option, false);
+            }
+        }
+
+        $this->ffprobe->prepare()->run();
+
+        return json_decode($this->ffprobe->getOutput(), true);
     }
 
-    public function frames()
+    public function add(AbstractParameter $parameter)
     {
-        $this->ffprobe->clearArgument()->addArgument('show_frames');
+        $this->parameters[] = $parameter;
 
-        return $this->getJson();
+        return $this;
     }
 
-    public function streams()
+    public function clear()
     {
-        $this->ffprobe->clearArgument()->addArgument('show_streams');
+        $this->parameters = [];
 
-        return $this->getJson()['streams'];
-    }
-
-    public function chapters()
-    {
-        $this->ffprobe->clearArgument()->addArgument('show_chapters');
-
-        return $this->getJson();
-    }
-
-    private function getJson()
-    {
-        $this->setFileArgument()->setPrintFormat('json')
-                    ->prepare()
-                    ->run();
-
-        $json = json_decode($this->ffprobe->getOutput(), true);
-        return $json;
-    }
-
-    private function setFileArgument()
-    {
-        return $this->ffprobe->addArgument($this->file, false);
+        return $this;
     }
 }
