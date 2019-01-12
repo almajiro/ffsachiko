@@ -1,6 +1,9 @@
 <p align="center">
   <img src="https://raw.github.com/wiki/almajiro/ffsachiko/images/ffsachiko.jpg">
 </p>
+<p align="center">
+  <img src="https://travis-ci.org/almajiro/ffsachiko.svg?branch=master">
+</p>
 
 FFSachiko
 ===
