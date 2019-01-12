@@ -12,8 +12,16 @@ trait ProgressableTrait
 
     private $regex = '/^frame=(.*) fps=(.*[0-9]) q=(.*) size=(.*)kB time=(.*) bitrate=(.*)kbits\/s speed=(.*)x/';
 
-    private function filterOutput($type, $buffer)
+    private function filterOutput($type, $buffer, $debug = false)
     {
+        if ($debug) {
+            if (Process::ERR === $type) {
+                echo 'ERR > '.$buffer;
+            } else {
+                echo 'OUT > '.$buffer;
+            }
+        }
+
         if (Process::ERR === $type) {
             if (preg_match($this->regex, $buffer, $matches)) {
                 $frame = trim($matches[1]);
@@ -29,13 +37,13 @@ trait ProgressableTrait
         }
     }
 
-    public function convertAndProgress(callable $callback)
+    public function convertAndProgress(callable $callback, bool $debug = false)
     {
         $this->prepare();
         $self = $this;
 
-        $this->process()->run(function ($type, $buffer) use (&$self, $callback) {
-            $progress = $self->filterOutput($type, $buffer);
+        $this->process()->run(function ($type, $buffer) use (&$self, $callback, $debug) {
+            $progress = $self->filterOutput($type, $buffer, $debug);
 
             if (is_array($progress)) {
                 $callback(

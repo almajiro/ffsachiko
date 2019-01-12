@@ -73,6 +73,7 @@ abstract class AbstractExecutable
         }
 
         $this->process = new Process($this->preparedArguments);
+        $this->process->setTimeout($this->timeout);
         return $this;
     }
 
@@ -83,7 +84,7 @@ abstract class AbstractExecutable
 
     public function run()
     {
-        $this->process()->setTimeout($this->timeout)->run();
+        $this->process()->run();
         $this->isSuccessful();
     }
 
