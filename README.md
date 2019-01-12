@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.github.com/wiki/almajiro/ffsachiko/images/ffsachiko.jpg">
+</p>
+
 FFSachiko
 ===
 The simplest FFmpeg/FFprobe wrapper.
